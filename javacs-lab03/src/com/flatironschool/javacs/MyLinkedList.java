@@ -85,7 +85,22 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public void add(int index, E element) {
-		// TODO: fill this in
+		// create new node
+		Node newNode = new Node(element);
+
+		// case 1: add to front of linked list
+		if (index == 0) {
+			newNode.next = head;
+			head = newNode;
+		}
+		// add to middle/end of linked list
+		else {
+			Node prev = getNode(index-1);
+			newNode.next = prev.next;
+			prev.next = newNode;
+		}
+		size++;
+		return;
 	}
 
 	@Override
@@ -146,7 +161,10 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public int indexOf(Object target) {
-		// TODO: fill this in
+		for (int i = 0; i < size; i++) {
+			if (equals(target,get(i)))
+				return i;
+		}
 		return -1;
 	}
 
@@ -201,8 +219,25 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public boolean remove(Object obj) {
-		// TODO: fill this in
-		return false;
+		int i = indexOf(obj);
+
+		// case 1: removing head
+		if (i == 0) {
+			if (size > 1)
+				head = getNode(1);
+			else
+				head = null;
+		}
+		// removing from middle/end of list
+		else if (i > 0) {
+			Node temp = getNode(i-1);
+			temp.next = getNode(i).next;
+		}
+		// object wasn't found
+		else
+			return false;
+		size--;
+		return true;
 	}
 
 	@Override
@@ -250,15 +285,9 @@ public class MyLinkedList<E> implements List<E> {
 		if (fromIndex < 0 || toIndex >= size || fromIndex > toIndex) {
 			throw new IndexOutOfBoundsException();
 		}
-		// TODO: classify this and improve it.
-		int i = 0;
 		MyLinkedList<E> list = new MyLinkedList<E>();
-		for (Node node=head; node != null; node = node.next) {
-			if (i >= fromIndex && i <= toIndex) {
-				list.add(node.cargo);
-			}
-			i++;
-		}
+		list.head = getNode(fromIndex);
+		list.size = toIndex - fromIndex;
 		return list;
 	}
 
